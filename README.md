@@ -10,9 +10,13 @@ colorTo: purple
 
 sdk: docker
 
-app\_file: server.py
-
 pinned: false
 
 \---
+
+
+
+\# OpenEnv MyEnv
+
+FastAPI RL environment
 
