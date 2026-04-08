@@ -1,28 +1,18 @@
-\# Resume Screening Environment
+\---
 
+title: OpenEnv MyEnv
 
+emoji: 🚀
 
-This environment evaluates resume-job matching.
+colorFrom: blue
 
+colorTo: purple
 
+sdk: docker
 
-\## Action
+app\_file: server.py
 
-Agent gives score (0–100)
+pinned: false
 
-
-
-\## Reward
-
-\- Close to expected → high reward
-
-\- Far → low reward
-
-
-
-\## Endpoints
-
-\- /reset
-
-\- /step
+\---
 
