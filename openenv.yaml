@@ -1,0 +1,12 @@
+name: openenv-myenv
+version: 0.1.0
+
+environment:
+  type: custom
+
+entrypoints:
+  reset: /reset
+  step: /step
+
+metadata:
+  description: Simple RL environment for resume scoring
