@@ -1,0 +1,8 @@
+[project]
+name = "openenv-myenv"
+version = "0.1.0"
+description = "Simple RL environment for resume scoring"
+dependencies = [
+    "fastapi",
+    "uvicorn"
+]
