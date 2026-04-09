@@ -2,9 +2,9 @@ import requests
 import time
 import os
 import re
-from openai import OpenAI
 
 BASE_URL = "http://127.0.0.1:8000"
+
 
 def wait_for_server():
     for _ in range(10):
@@ -20,17 +20,21 @@ def wait_for_server():
 
 def get_llm_score():
     try:
+        from openai import OpenAI
+
         client = OpenAI(
             base_url=os.environ.get("API_BASE_URL"),
             api_key=os.environ.get("API_KEY")
         )
 
+        model = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
+
         response = client.chat.completions.create(
-            model=os.environ.get("MODEL_NAME", "gpt-3.5-turbo"),
+            model=model,
             messages=[
                 {
                     "role": "user",
-                    "content": "Give a score from 0 to 100 for a resume matching a Python job. Just output a number."
+                    "content": "Return ONLY a number between 0 and 100."
                 }
             ]
         )
@@ -39,12 +43,13 @@ def get_llm_score():
 
         nums = re.findall(r"\d+", content)
         if nums:
-            return int(nums[0])
+            score = int(nums[0])
+            return max(0, min(100, score))  # clamp
 
     except Exception:
         pass
 
-    return 75  # fallback
+    return 50
 
 
 def run():
@@ -57,13 +62,10 @@ def run():
         return
 
     try:
-        # Reset environment
         requests.post(f"{BASE_URL}/reset")
 
-        # Get score from LLM
         score = get_llm_score()
 
-        # Call step
         step = requests.post(
             f"{BASE_URL}/step",
             json={"score": score}
