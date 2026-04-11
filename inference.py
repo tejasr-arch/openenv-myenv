@@ -19,44 +19,40 @@ def wait_for_server():
 
 
 def get_llm_score():
-    try:
-        # 🔥 STRICT ENV (NO .get)
-        base_url = os.environ["API_BASE_URL"]
-        api_key = os.environ["API_KEY"]
-        model = os.environ["MODEL_NAME"]
+    # 🔥 STRICT: no try/except before call
+    base_url = os.environ["API_BASE_URL"]
+    api_key = os.environ["API_KEY"]
+    model = os.environ["MODEL_NAME"]
 
-        url = f"{base_url}/chat/completions"
+    url = f"{base_url}/chat/completions"
 
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
 
-        data = {
-            "model": model,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": "Return ONLY a number between 0 and 100."
-                }
-            ]
-        }
+    data = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": "Return ONLY a number between 0 and 100."
+            }
+        ]
+    }
 
-        response = requests.post(url, headers=headers, json=data, timeout=10)
+    response = requests.post(url, headers=headers, json=data, timeout=10)
 
-        result = response.json()
+    result = response.json()
 
-        content = result["choices"][0]["message"]["content"]
+    content = result["choices"][0]["message"]["content"]
 
-        nums = re.findall(r"\d+", content)
-        if nums:
-            score = int(nums[0])
-            return max(0, min(100, score))
+    nums = re.findall(r"\d+", content)
+    if nums:
+        score = int(nums[0])
+        return max(0, min(100, score))
 
-    except Exception as e:
-        print(f"[DEBUG] LLM error: {e}", flush=True)
-
-    return 50  # fallback
+    return 50
 
 
 def run():
@@ -69,13 +65,11 @@ def run():
         return
 
     try:
-        # reset env
         requests.post(f"{BASE_URL}/reset")
 
-        # 🔥 LLM CALL (MANDATORY)
+        # 🔥 FORCE LLM CALL
         score = get_llm_score()
 
-        # step
         step = requests.post(
             f"{BASE_URL}/step",
             json={"score": score}
