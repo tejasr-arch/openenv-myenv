@@ -20,29 +20,33 @@ def wait_for_server():
 
 def get_llm_score():
     try:
-        from openai import OpenAI
-
         # 🔥 STRICT ENV (NO .get)
         base_url = os.environ["API_BASE_URL"]
         api_key = os.environ["API_KEY"]
         model = os.environ["MODEL_NAME"]
 
-        client = OpenAI(
-            base_url=base_url,
-            api_key=api_key
-        )
+        url = f"{base_url}/chat/completions"
 
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+
+        data = {
+            "model": model,
+            "messages": [
                 {
                     "role": "user",
                     "content": "Return ONLY a number between 0 and 100."
                 }
             ]
-        )
+        }
 
-        content = response.choices[0].message.content
+        response = requests.post(url, headers=headers, json=data, timeout=10)
+
+        result = response.json()
+
+        content = result["choices"][0]["message"]["content"]
 
         nums = re.findall(r"\d+", content)
         if nums:
