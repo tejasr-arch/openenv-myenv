@@ -8,7 +8,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "requests",
-    "openai>=1.0.0",
+    "openai",
     "openenv-core>=0.2.0"
 ]
 
