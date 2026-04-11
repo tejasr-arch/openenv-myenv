@@ -2,11 +2,15 @@
 name = "openenv-myenv"
 version = "0.1.0"
 description = "Simple RL environment for resume scoring"
+requires-python = ">=3.10"
+
 dependencies = [
     "fastapi",
     "uvicorn",
+    "requests",
+    "openai>=1.0.0",
     "openenv-core>=0.2.0"
 ]
 
 [project.scripts]
-server = "server.app:main"
+server = "server:main"
